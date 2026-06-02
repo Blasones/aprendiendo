@@ -1,0 +1,23 @@
+{
+  "appId": "com.tcp.contable",
+  "appName": "Contable TCP Cuba",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SQLite": {
+      "androidIsEncryptionEnabled": false,
+      "iosIsEncryptionEnabled": false
+    },
+    "Preferences": {},
+    "Filesystem": {}
+  },
+  "android": {
+    "minSdkVersion": 26,
+    "targetSdkVersion": 34,
+    "allowMixedContent": false,
+    "captureInput": false,
+    "webContentsDebuggingEnabled": false
+  }
+}

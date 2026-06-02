@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2c3e50">
+  <title>Contabilidad TCP Cuba</title>
+  
+  <!-- Librerías externas para reportes -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <!-- Pantalla de Login -->
+  <section id="vista-login" class="vista activa">
+    <div class="login-container">
+      <div class="login-card">
+        <h1>📊 Contabilidad TCP</h1>
+        <p class="subtitle">Sistema Contable para Trabajadores por Cuenta Propia</p>
+        
+        <form id="form-login" class="login-form">
+          <div class="form-group">
+            <label for="login-pin">Ingrese su PIN (4-6 dígitos)</label>
+            <input 
+              type="password" 
+              id="login-pin" 
+              name="pin" 
+              maxlength="6" 
+              pattern="[0-9]{4,6}"
+              placeholder="••••"
+              inputmode="numeric"
+              autocomplete="off"
+              required
+            >
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-large">
+            🔓 Acceder
+          </button>
+          
+          <p class="help-text">
+            ¿Olvidó su PIN? Contacte al administrador.
+          </p>
+        </form>
+      </div>
+      
+      <footer class="login-footer">
+        <p>© 2024 - Cumple Res. 345/2021 y 346/2021 ONAT</p>
+      </footer>
+    </div>
+  </section>
+
+  <!-- Configuración Inicial (primer uso) -->
+  <section id="vista-configuracion-inicial" class="vista">
+    <div class="container">
+      <h2>⚙️ Configuración Inicial</h2>
+      
+      <form id="form-config-inicial" class="form-card">
+        <div class="form-group">
+          <label for="config-nombre">Nombre del Proyecto / TCP</label>
+          <input type="text" id="config-nombre" name="nombre_proyecto" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="config-nit">NIT (Número de Identificación Tributaria)</label>
+          <input type="text" id="config-nit" name="nit" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="config-regimen">Régimen Tributario</label>
+          <select id="config-regimen" name="regimen" required>
+            <option value="general">Régimen General</option>
+            <option value="simplificado">Régimen Simplificado</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="config-base-ss">Base de Cotización SS (2000-9500 CUP)</label>
+          <input 
+            type="number" 
+            id="config-base-ss" 
+            name="base_ss" 
+            min="2000" 
+            max="9500" 
+            value="2000"
+            required
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="config-pin">PIN de Acceso (4-6 dígitos)</label>
+          <input 
+            type="password" 
+            id="config-pin" 
+            name="pin" 
+            maxlength="6"
+            minlength="4"
+            pattern="[0-9]{4,6}"
+            placeholder="••••"
+            required
+          >
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-large">
+          💾 Guardar Configuración
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Layout Principal con Navegación -->
+  <div id="app-layout" style="display: none;">
+    <!-- Barra de Navegación Superior -->
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <span class="logo">📊</span>
+        <span class="brand-text">TCP Contable</span>
+      </div>
+      
+      <button class="menu-toggle" id="menu-toggle">
+        ☰
+      </button>
+      
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="#dashboard" class="nav-link">🏠 Dashboard</a></li>
+        <li><a href="#ingresos" class="nav-link">📥 Ingresos</a></li>
+        <li><a href="#gastos" class="nav-link">📤 Gastos</a></li>
+        <li><a href="#comprobantes" class="nav-link">📋 Comprobantes</a></li>
+        <li><a href="#mayor" class="nav-link">📖 Mayor</a></li>
+        <li><a href="#tributos" class="nav-link">💰 Tributos</a></li>
+        <li><a href="#activos" class="nav-link">🏢 Activos</a></li>
+        <li><a href="#nomina" class="nav-link">👥 Nómina</a></li>
+        <li><a href="#backup" class="nav-link">💾 Backup</a></li>
+        <li><a href="#" id="btn-cerrar-sesion" class="nav-link logout">🚪 Salir</a></li>
+      </ul>
+    </nav>
+
+    <!-- Contenedor Principal -->
+    <main id="app-content" class="main-content">
+      
+      <!-- Vista: Dashboard -->
+      <section id="vista-dashboard" class="vista">
+        <h2>🏠 Panel de Control</h2>
+        
+        <div class="dashboard-grid">
+          <div class="card card-saldo">
+            <h3>💵 Caja</h3>
+            <p class="saldo-valor" id="dash-saldo-caja">0.00 CUP</p>
+            <small>Cuenta 100</small>
+          </div>
+          
+          <div class="card card-saldo">
+            <h3>🏦 Banco</h3>
+            <p class="saldo-valor" id="dash-saldo-banco">0.00 CUP</p>
+            <small>Cuenta 110</small>
+          </div>
+          
+          <div class="card card-ingreso">
+            <h3>📥 Ingresos del Mes</h3>
+            <p class="saldo-valor" id="dash-ingresos-mes">0.00 CUP</p>
+            <small>Cuenta 900</small>
+          </div>
+          
+          <div class="card card-gasto">
+            <h3>📤 Gastos del Mes</h3>
+            <p class="saldo-valor" id="dash-gastos-mes">0.00 CUP</p>
+            <small>Cuentas 800-820</small>
+          </div>
+          
+          <div class="card card-utilidad full-width">
+            <h3>📈 Utilidad Estimada</h3>
+            <p class="saldo-valor" id="dash-utilidad-estimada">0.00 CUP</p>
+            <small>Ingresos - Gastos</small>
+          </div>
+        </div>
+        
+        <p class="actualizacion-info">
+          Actualizado: <span id="dash-fecha-actualizacion">--</span>
+        </p>
+        
+        <!-- Accesos Rápidos -->
+        <div class="quick-actions">
+          <h3>⚡ Operaciones Rápidas</h3>
+          
+          <div class="quick-forms">
+            <!-- Formulario Ingreso Rápido -->
+            <div class="quick-form card">
+              <h4>📥 Registrar Ingreso</h4>
+              <form id="form-ingreso-rapido">
+                <div class="form-row">
+                  <input type="date" id="op-fecha-ingreso" class="op-fecha" value="">
+                  <input type="number" id="op-monto-ingreso" placeholder="Monto" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-row">
+                  <select id="op-cuenta-ingreso">
+                    <option value="100">Caja (100)</option>
+                    <option value="110">Banco (110)</option>
+                  </select>
+                  <select id="op-moneda-ingreso">
+                    <option value="CUP">CUP</option>
+                    <option value="MLE">MLE</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <input type="text" id="op-descripcion-ingreso" placeholder="Descripción" required>
+                  <input type="number" id="op-tasa-ingreso" placeholder="Tasa BCC" step="0.01" style="display:none;">
+                </div>
+                <button type="submit" class="btn btn-success">Registrar Ingreso</button>
+              </form>
+            </div>
+            
+            <!-- Formulario Gasto Rápido -->
+            <div class="quick-form card">
+              <h4>📤 Registrar Gasto</h4>
+              <form id="form-gasto-rapido">
+                <div class="form-row">
+                  <input type="date" id="op-fecha-gasto" class="op-fecha" value="">
+                  <input type="number" id="op-monto-gasto" placeholder="Monto" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-row">
+                  <select id="op-cuenta-gasto">
+                    <option value="100">Caja (100)</option>
+                    <option value="110">Banco (110)</option>
+                  </select>
+                  <select id="op-moneda-gasto">
+                    <option value="CUP">CUP</option>
+                    <option value="MLE">MLE</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <input type="text" id="op-descripcion-gasto" placeholder="Descripción" required>
+                  <input type="number" id="op-tasa-gasto" placeholder="Tasa BCC" step="0.01" style="display:none;">
+                </div>
+                <button type="submit" class="btn btn-danger">Registrar Gasto</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vista: Ingresos -->
+      <section id="vista-ingresos" class="vista">
+        <h2>📥 Gestión de Ingresos</h2>
+        <div class="card">
+          <p>Formulario completo de registro de ingresos (pendiente de implementación)</p>
+        </div>
+      </section>
+
+      <!-- Vista: Gastos -->
+      <section id="vista-gastos" class="vista">
+        <h2>📤 Gestión de Gastos</h2>
+        <div class="card">
+          <p>Formulario completo de registro de gastos (pendiente de implementación)</p>
+        </div>
+      </section>
+
+      <!-- Vista: Comprobantes -->
+      <section id="vista-comprobantes" class="vista">
+        <h2>📋 Comprobantes de Operaciones</h2>
+        <div class="card">
+          <p>Listado de comprobantes registrados</p>
+          <button class="btn btn-primary" onclick="window.exportarReporte('SC05', {fechaInicio: '2024-01-01', fechaFin: '2024-12-31'})">
+            📄 Generar Mayor SC-5-05
+          </button>
+        </div>
+      </section>
+
+      <!-- Vista: Mayor -->
+      <section id="vista-mayor" class="vista">
+        <h2>📖 Libro Mayor</h2>
+        <div class="card">
+          <p>Consultas del mayor y submayor</p>
+        </div>
+      </section>
+
+      <!-- Vista: Tributos -->
+      <section id="vista-tributos" class="vista">
+        <h2>💰 Cálculo de Tributos</h2>
+        <div id="tributos-resumen" class="card">
+          <p>Cargando resumen tributario...</p>
+        </div>
+      </section>
+
+      <!-- Vista: Activos Fijos -->
+      <section id="vista-activos" class="vista">
+        <h2>🏢 Activos Fijos</h2>
+        <div class="card">
+          <p>Gestión y depreciación de activos fijos</p>
+        </div>
+      </section>
+
+      <!-- Vista: Nómina -->
+      <section id="vista-nomina" class="vista">
+        <h2>👥 Nómina y Trabajadores Contratados</h2>
+        <div class="card">
+          <p>Registro de trabajadores y cálculo de retenciones IIP</p>
+        </div>
+      </section>
+
+      <!-- Vista: Backup -->
+      <section id="vista-backup" class="vista">
+        <h2>💾 Copia de Seguridad</h2>
+        <div class="card">
+          <p>Exporte su base de datos para mantenerla segura</p>
+          <button id="btn-exportar-backup" class="btn btn-primary btn-large">
+            📦 Exportar Backup Completo
+          </button>
+          <p class="help-text">
+            El backup se guardará en: /storage/emulated/0/Download/Contabilidad_TCP/
+          </p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Alerta Global -->
+  <div id="alerta-global" class="alerta" style="display: none;"></div>
+
+  <!-- Script Principal -->
+  <script type="module">
+    // Importar router
+    import { inicializarRouter } from './js/ui/router.js';
+    
+    // Inicializar aplicación cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Iniciando Contabilidad TCP Cuba...');
+      
+      // Configurar fechas por defecto
+      const hoy = new Date().toISOString().slice(0, 10);
+      document.querySelectorAll('.op-fecha').forEach(input => {
+        input.value = hoy;
+      });
+      
+      // Mostrar/ocultar campo de tasa según moneda
+      document.querySelectorAll('[id*="moneda"]').forEach(select => {
+        select.addEventListener('change', (e) => {
+          const form = e.target.closest('form');
+          const tasaInput = form.querySelector('[id*="tasa"]');
+          if (tasaInput) {
+            tasaInput.style.display = e.target.value === 'MLE' ? 'block' : 'none';
+          }
+        });
+      });
+      
+      // Toggle menú móvil
+      document.getElementById('menu-toggle')?.addEventListener('click', () => {
+        const navMenu = document.getElementById('nav-menu');
+        navMenu.classList.toggle('activo');
+      });
+      
+      // Inicializar router
+      inicializarRouter();
+      
+      // Exponer funciones globales para botones inline
+      window.exportarReporte = async (tipo, params) => {
+        const { exportarReporte } = await import('./js/ui/router.js');
+        await exportarReporte(tipo, params);
+      };
+    });
+  </script>
+</body>
+</html>
