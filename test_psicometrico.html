@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Psicométrico - Evaluación de Capacidad Analítica</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .instructions {
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .question-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .question-section:hover {
+            border-color: #3498db;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
+        }
+        
+        .question-number {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .question-text {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .options {
+            list-style: none;
+        }
+        
+        .option {
+            margin-bottom: 12px;
+        }
+        
+        .option label {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option label:hover {
+            background: #e3f2fd;
+            border-color: #3498db;
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 15px;
+            margin-top: 5px;
+        }
+        
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 30px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4);
+        }
+        
+        .results {
+            display: none;
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .score-display {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        
+        .evaluation {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2ecc71;
+        }
+        
+        .evaluation h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .recommendations {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #f39c12;
+        }
+        
+        .recommendations h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .recommendations ul {
+            margin-left: 20px;
+        }
+        
+        .recommendations li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .category-score {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 25px;
+            background: #3498db;
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Test Psicométrico</h1>
+            <p>Evaluación de Capacidad Analítica - Nivel Medio</p>
+        </div>
+        
+        <div class="content">
+            <div class="instructions">
+                <h3>📋 Instrucciones</h3>
+                <p>Este test evalúa tus habilidades de análisis lógico, razonamiento numérico, comprensión verbal y resolución de problemas. Responde todas las preguntas seleccionando la opción que consideres más adecuada. No hay límite de tiempo, pero se recomienda trabajar de manera eficiente.</p>
+            </div>
+            
+            <form id="testForm">
+                <!-- Sección 1: Razonamiento Lógico -->
+                <div class="question-section">
+                    <span class="question-number">Pregunta 1 de 15</span>
+                    <p class="question-text">Si todos los gerentes son líderes y algunos líderes son innovadores, ¿cuál de las siguientes afirmaciones es necesariamente verdadera?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q1" value="a">
+                                <span>Todos los gerentes son innovadores</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q1" value="b">
+                                <span>Algunos gerentes pueden ser innovadores</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q1" value="c">
+                                <span>Ningún gerente es innovador</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q1" value="d">
+                                <span>Todos los innovadores son gerentes</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="question-section">
+                    <span class="question-number">Pregunta 2 de 15</span>
+                    <p class="question-text">Complete la serie: 2, 6, 12, 20, 30, ?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q2" value="a">
+                                <span>38</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q2" value="b">
+                                <span>40</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q2" value="c">
+                                <span>42</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q2" value="d">
+                                <span>44</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="question-section">
+                    <span class="question-number">Pregunta 3 de 15</span>
+                    <p class="question-text">Un proyecto requiere 120 horas de trabajo. Si un equipo de 4 personas trabaja 6 horas diarias, ¿cuántos días tardarán en completar el proyecto?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q3" value="a">
+                                <span>4 días</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q3" value="b">
+                                <span>5 días</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q3" value="c">
+                                <span>6 días</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q3" value="d">
+                                <span>8 días</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="question-section">
+                    <span class="question-number">Pregunta 4 de 15</span>
+                    <p class="question-text">¿Qué palabra no pertenece al grupo?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q4" value="a">
+                                <span>Análisis</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q4" value="b">
+                                <span>Evaluación</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q4" value="c">
+                                <span>Suposición</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q4" value="d">
+                                <span>Investigación</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="question-section">
+                    <span class="question-number">Pregunta 5 de 15</span>
+                    <p class="question-text">Si A = B, B = C, y C ≠ D, entonces:</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q5" value="a">
+                                <span>A = D</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q5" value="b">
+                                <span>A ≠ D</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q5" value="c">
+                                <span>B = D</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q5" value="d">
+                                <span>No se puede determinar</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Sección 2: Comprensión Verbal -->
+                <div class="question-section">
+                    <span class="question-number">Pregunta 6 de 15</span>
+                    <p class="question-text">Lea el siguiente párrafo: "La eficiencia organizacional depende de tres factores clave: comunicación clara, procesos bien definidos y liderazgo efectivo. Cuando uno de estos elementos falla, el rendimiento general se ve comprometido." ¿Cuál es la idea principal?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q6" value="a">
+                                <span>El liderazgo es el factor más importante</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q6" value="b">
+                                <span>La comunicación es esencial para el éxito</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q6" value="c">
+                                <span>La eficiencia requiere múltiples elementos working together</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q6" value="d">
+                                <span>Los procesos son fáciles de definir</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="question-section">
+                    <span class="question-number">Pregunta 7 de 15</span>
+                    <p class="question-text">Seleccione el sinónimo más apropiado de "PRAGMÁTICO":</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q7" value="a">
+                                <span>Teórico</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q7" value="b">
+                                <span>Práctico</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q7" value="c">
+                                <span>Filosófico</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q7" value="d">
+                                <span>Abstracto</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="question-section">
+                    <span class="question-number">Pregunta 8 de 15</span>
+                    <p class="question-text">Complete la analogía: LIBRO es a LECTURA como HORNO es a:</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q8" value="a">
+                                <span>Cocina</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q8" value="b">
+                                <span>Cocción</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q8" value="c">
+                                <span>Calor</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q8" value="d">
+                                <span>Pan</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Sección 3: Razonamiento Numérico -->
+                <div class="question-section">
+                    <span class="question-number">Pregunta 9 de 15</span>
+                    <p class="question-text">Si un producto cuesta $80 y tiene un descuento del 25%, ¿cuál es el precio final?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q9" value="a">
+                                <span>$55</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q9" value="b">
+                                <span>$60</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q9" value="c">
+                                <span>$65</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q9" value="d">
+                                <span>$70</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="question-section">
+                    <span class="question-number">Pregunta 10 de 15</span>
+                    <p class="question-text">En una empresa, la relación entre hombres y mujeres es de 3:5. Si hay 120 empleados en total, ¿cuántas mujeres trabajan allí?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q10" value="a">
+                                <span>45</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q10" value="b">
+                                <span>60</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q10" value="c">
+                                <span>75</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q10" value="d">
+                                <span>80</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="question-section">
+                    <span class="question-number">Pregunta 11 de 15</span>
+                    <p class="question-text">Si 5 máquinas producen 100 unidades en 4 horas, ¿cuántas unidades producirán 8 máquinas en 6 horas?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q11" value="a">
+                                <span>200</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q11" value="b">
+                                <span>220</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q11" value="c">
+                                <span>240</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q11" value="d">
+                                <span>260</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Sección 4: Resolución de Problemas -->
+                <div class="question-section">
+                    <span class="question-number">Pregunta 12 de 15</span>
+                    <p class="question-text">Tiene tres cajas: una contiene solo manzanas, otra solo naranjas, y otra mezcla de ambas. Todas están mal etiquetadas. ¿Cuántas frutas necesita sacar como mínimo para etiquetar correctamente todas las cajas?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q12" value="a">
+                                <span>1 fruta</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q12" value="b">
+                                <span>2 frutas</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q12" value="c">
+                                <span>3 frutas</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q12" value="d">
+                                <span>4 frutas</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="question-section">
+                    <span class="question-number">Pregunta 13 de 15</span>
+                    <p class="question-text">Un empleado comete un error en un informe importante. Usted es su supervisor. ¿Cuál es la mejor acción?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q13" value="a">
+                                <span>Corregir el error sin decir nada al empleado</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q13" value="b">
+                                <span>Reportar el error inmediatamente a recursos humanos</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q13" value="c">
+                                <span>Analizar la causa, corregir el error y proporcionar retroalimentación constructiva</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q13" value="d">
+                                <span>Ignorar el error si no es muy grave</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="question-section">
+                    <span class="question-number">Pregunta 14 de 15</span>
+                    <p class="question-text">Si ayer fue mañana respecto al hoy que sería jueves, ¿qué día es hoy?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q14" value="a">
+                                <span>Martes</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q14" value="b">
+                                <span>Miércoles</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q14" value="c">
+                                <span>Jueves</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q14" value="d">
+                                <span>Viernes</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="question-section">
+                    <span class="question-number">Pregunta 15 de 15</span>
+                    <p class="question-text">En un proyecto, usted identifica que los recursos son insuficientes para cumplir el plazo. ¿Qué hace primero?</p>
+                    <ul class="options">
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q15" value="a">
+                                <span>Trabajar horas extras sin informar a nadie</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q15" value="b">
+                                <span>Analizar el problema, cuantificar la brecha y proponer soluciones alternativas</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q15" value="c">
+                                <span>Cancelar el proyecto inmediatamente</span>
+                            </label>
+                        </li>
+                        <li class="option">
+                            <label>
+                                <input type="radio" name="q15" value="d">
+                                <span>Culpar al equipo por no trabajar lo suficiente</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <button type="button" class="submit-btn" onclick="calculateResults()">📊 Ver Resultados y Evaluación</button>
+            </form>
+            
+            <div id="results" class="results">
+                <div class="score-display">
+                    <div class="score-circle" id="totalScore">0%</div>
+                    <h2>Puntuación Total</h2>
+                    <p id="scoreText"></p>
+                </div>
+                
+                <div class="category-scores" style="text-align: center; margin-bottom: 20px;">
+                    <span class="category-score">Lógico: <span id="logicScore">0</span>/4</span>
+                    <span class="category-score">Verbal: <span id="verbalScore">0</span>/4</span>
+                    <span class="category-score">Numérico: <span id="numericScore">0</span>/4</span>
+                    <span class="category-score">Problemas: <span id="problemScore">0</span>/3</span>
+                </div>
+                
+                <div class="evaluation">
+                    <h3>📈 Evaluación del Desempeño</h3>
+                    <p id="evaluationText"></p>
+                </div>
+                
+                <div class="recommendations">
+                    <h3>💡 Recomendaciones para el Desarrollo Profesional</h3>
+                    <ul id="recommendationsList"></ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Test Psicométrico para Evaluación de Capacidad Analítica - Nivel Medio</p>
+            <p>© 2024 - Herramienta de Evaluación de Personal</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Respuestas correctas
+        const correctAnswers = {
+            q1: 'b', q2: 'c', q3: 'b', q4: 'c', q5: 'b',
+            q6: 'c', q7: 'b', q8: 'b', q9: 'b', q10: 'c',
+            q11: 'c', q12: 'a', q13: 'c', q14: 'd', q15: 'b'
+        };
+        
+        // Categorías de preguntas
+        const categories = {
+            logic: ['q1', 'q2', 'q3', 'q5'],
+            verbal: ['q4', 'q6', 'q7', 'q8'],
+            numeric: ['q9', 'q10', 'q11', 'q14'],
+            problem: ['q12', 'q13', 'q15']
+        };
+        
+        function calculateResults() {
+            let totalCorrect = 0;
+            let categoryScores = {
+                logic: 0,
+                verbal: 0,
+                numeric: 0,
+                problem: 0
+            };
+            
+            // Calcular puntuaciones
+            for (let question in correctAnswers) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === correctAnswers[question]) {
+                    totalCorrect++;
+                    
+                    // Determinar categoría y actualizar puntuación
+                    for (let category in categories) {
+                        if (categories[category].includes(question)) {
+                            categoryScores[category]++;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            const percentage = Math.round((totalCorrect / 15) * 100);
+            
+            // Mostrar resultados
+            document.getElementById('totalScore').textContent = percentage + '%';
+            document.getElementById('logicScore').textContent = categoryScores.logic;
+            document.getElementById('verbalScore').textContent = categoryScores.verbal;
+            document.getElementById('numericScore').textContent = categoryScores.numeric;
+            document.getElementById('problemScore').textContent = categoryScores.problem;
+            
+            // Generar evaluación
+            let evaluationText = '';
+            let recommendations = [];
+            
+            if (percentage >= 90) {
+                evaluationText = '¡Excelente desempeño! Demuestra capacidades analíticas sobresalientes para posiciones de nivel medio-alto. Tiene habilidades excepcionales en razonamiento lógico, comprensión verbal y resolución de problemas.';
+                recommendations = [
+                    'Considerar roles con mayor responsabilidad analítica',
+                    'Desarrollar habilidades de liderazgo de equipos',
+                    'Buscar proyectos complejos que desafíen sus capacidades',
+                    'Mentorear a otros empleados en técnicas de análisis'
+                ];
+            } else if (percentage >= 75) {
+                evaluationText = 'Buen desempeño. Posee capacidades analíticas sólidas adecuadas para posiciones de nivel medio. Muestra buen juicio en la mayoría de situaciones, con algunas áreas de oportunidad para mejorar.';
+                recommendations = [
+                    'Fortalecer habilidades en las categorías con menor puntuación',
+                    'Practicar resolución de problemas bajo presión de tiempo',
+                    'Tomar cursos de análisis de datos avanzado',
+                    'Participar en proyectos interdepartamentales'
+                ];
+            } else if (percentage >= 60) {
+                evaluationText = 'Desempeño adecuado. Tiene capacidades analíticas básicas necesarias para posiciones de nivel medio, pero requiere desarrollo en algunas áreas clave para optimizar su rendimiento.';
+                recommendations = [
+                    'Reforzar fundamentos de razonamiento lógico-matemático',
+                    'Mejorar habilidades de comprensión lectora técnica',
+                    'Practicar ejercicios de análisis crítico regularmente',
+                    'Buscar retroalimentación constante en tareas analíticas'
+                ];
+            } else {
+                evaluationText = 'Desempeño por debajo del nivel esperado. Las capacidades analíticas actuales requieren desarrollo significativo para posiciones de nivel medio. Se recomienda capacitación intensiva antes de asumir responsabilidades analíticas complejas.';
+                recommendations = [
+                    'Completar cursos básicos de lógica y razonamiento',
+                    'Practicar ejercicios diarios de matemáticas básicas',
+                    'Leer material técnico para mejorar comprensión verbal',
+                    'Trabajar con un mentor para desarrollar pensamiento crítico',
+                    'Considerar posiciones de nivel inicial para ganar experiencia'
+                ];
+            }
+            
+            // Añadir recomendaciones específicas por categoría
+            if (categoryScores.logic < 3) {
+                recommendations.push('• Enfocarse en ejercicios de razonamiento lógico y series numéricas');
+            }
+            if (categoryScores.verbal < 3) {
+                recommendations.push('• Mejorar vocabulario técnico y práctica de comprensión lectora');
+            }
+            if (categoryScores.numeric < 3) {
+                recommendations.push('• Reforzar habilidades de cálculo y proporciones matemáticas');
+            }
+            if (categoryScores.problem < 2) {
+                recommendations.push('• Practicar estudios de caso y escenarios de toma de decisiones');
+            }
+            
+            document.getElementById('evaluationText').textContent = evaluationText;
+            
+            const recommendationsList = document.getElementById('recommendationsList');
+            recommendationsList.innerHTML = '';
+            recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.textContent = rec;
+                recommendationsList.appendChild(li);
+            });
+            
+            // Mostrar sección de resultados
+            document.getElementById('results').classList.add('show');
+            
+            // Scroll hacia los resultados
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
